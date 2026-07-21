@@ -1,38 +1,36 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROAD to ROCKstar</title>
-
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROAD to ROCKstar</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div id="title-screen">
+    <h1>🎸 ROAD to ROCKstar</h1>
+    <p>邦ロックで、人生を鳴らせ。</p>
 
-<h1>🎸 ROAD to ROCKstar</h1>
-
-<p>邦ロックで、人生を鳴らせ。</p>
-
-<button id="startBtn">はじめる</button>
-
+    <button id="startBtn">ゲームスタート</button>
 </div>
 
 <div id="game" style="display:none;">
 
 <header>
 
-<h2 id="playerName">名無しのベーシスト</h2>
+<h2 id="playerName"></h2>
+
+<p id="date">📅 4月1日</p>
 
 <div class="status">
 
-<div>Lv <span id="level">1</span></div>
+<div>⭐ Lv <span id="level">1</span></div>
 
-<div>❤️ <span id="love">0</span></div>
+<div>❤️ 邦ロック愛 <span id="love">0</span></div>
 
-<div>👥 <span id="fans">0</span></div>
+<div>👥 ファン <span id="fans">0</span></div>
 
 </div>
 
@@ -44,7 +42,7 @@
 
 <p id="story">
 
-今日も最高の邦ロックを探しに行こう。
+今日はどこへ行こう？
 
 </p>
 
@@ -57,7 +55,10 @@
 <button onclick="move('shop')">🎸 楽器店</button>
 
 </div>
-<div style="margin-top:15px;">
+
+</main>
+
+<footer>
 
 <button onclick="saveGame()">💾 セーブ</button>
 
@@ -65,8 +66,7 @@
 
 <button onclick="resetGame()">🗑 最初から</button>
 
-</div>
-</main>
+</footer>
 
 </div>
 
