@@ -1,10 +1,22 @@
 let player = {
+let player = {
+
     name: "",
+
     level: 1,
+
     love: 0,
+
     fans: 0,
+
     month: 4,
-    day: 1
+
+    day: 1,
+
+    firstLive: false,
+
+    festival: false
+
 };
 
 let currentQuestion = null;
