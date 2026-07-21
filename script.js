@@ -118,14 +118,14 @@ function quiz(){
     `;
 }
 
-function answer(correct){
+function answer(index){
 
     const story=document.getElementById("story");
     const buttons=document.getElementById("buttons");
 
-    if(correct){
+    if(index===currentQuestion.answer){
 
-        player.love+=20;
+        player.love += currentQuestion.reward;
 
         if(player.love>=100){
 
@@ -139,17 +139,17 @@ function answer(correct){
         updateStatus();
 
         story.innerHTML=
-        "⭕ 正解！<br><br>邦ロック愛 +20<br>ファン +5";
+        "⭕ 正解！<br><br>邦ロック愛 +"+currentQuestion.reward+"<br>ファン +5";
 
     }else{
 
         story.innerHTML=
-        "❌ 不正解！<br><br>正解は 石原慎也！";
+        "❌ 不正解！";
 
     }
 
     buttons.innerHTML=`
-    <button onclick="move('live')">🎤 ライブハウスへ戻る</button>
+    <button onclick="quiz()">🎸 次の問題</button>
+    <button onclick="move('home')">🏠 自宅へ戻る</button>
     `;
-
 }
