@@ -1,196 +1,318 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:"Yu Gothic",sans-serif;
-}
+let player = {
+    name: "",
+    level: 1,
+    love: 0,
+    fans: 0,
+    month: 4,
+    day: 1
+};
 
-body{
+let currentQuestion = null;
 
-    background:linear-gradient(180deg,#111,#1d1d1d,#000);
+const titleScreen = document.getElementById("title-screen");
+const gameScreen = document.getElementById("game");
 
-    color:white;
+document.getElementById("startBtn").addEventListener("click", startGame);
 
-    min-height:100vh;
+function startGame(){
 
-}
+    loadGame();
 
-#title-screen{
+    if(player.name===""){
 
-    display:flex;
+        let name = prompt("名前を入力してください");
 
-    flex-direction:column;
+        if(!name || name.trim()===""){
+            name="名無しのベーシスト";
+        }
 
-    justify-content:center;
+        player.name=name;
 
-    align-items:center;
+    }
 
-    height:100vh;
+    document.getElementById("playerName").textContent=player.name;
 
-    text-align:center;
+    titleScreen.style.display="none";
+    gameScreen.style.display="block";
 
-}
-
-#title-screen h1{
-
-    font-size:55px;
-
-    color:#b26cff;
-
-    margin-bottom:20px;
+    updateStatus();
 
 }
 
-#title-screen p{
+function updateStatus(){
 
-    color:#ddd;
+    document.getElementById("playerName").textContent=player.name;
 
-    font-size:20px;
+    document.getElementById("level").textContent=player.level;
 
-    margin-bottom:40px;
+    document.getElementById("love").textContent=player.love;
 
-}
+    document.getElementById("fans").textContent=player.fans;
 
-#startBtn{
-
-    background:#8b3dff;
-
-    color:white;
-
-    border:none;
-
-    border-radius:15px;
-
-    padding:18px 45px;
-
-    font-size:22px;
-
-    cursor:pointer;
-
-    transition:.3s;
+    document.getElementById("date").textContent=
+    "📅 "+player.month+"月"+player.day+"日";
 
 }
 
-#startBtn:hover{
+function move(place){
 
-    transform:scale(1.05);
+    const title=document.getElementById("place");
 
-}
+    const story=document.getElementById("story");
 
-#game{
+    const buttons=document.getElementById("buttons");
 
-    max-width:900px;
+    if(place==="school"){
 
-    margin:auto;
+        nextDay();
 
-    padding:25px;
+        title.textContent="🏫 学校";
 
-}
+        story.innerHTML=
+        "今日も授業。<br><br>放課後は軽音部でベースを弾こう！";
 
-header{
+        buttons.innerHTML=`
+        <button onclick="move('live')">🎤 ライブハウス</button>
+        <button onclick="move('home')">🏠 自宅</button>
+        `;
 
-    display:flex;
+    }
 
-    justify-content:space-between;
+    else if(place==="live"){
 
-    align-items:center;
+        title.textContent="🎤 ライブハウス";
 
-    margin-bottom:25px;
+        story.innerHTML=
+        "店長『邦ロッククイズに挑戦するか？』";
 
-}
+        buttons.innerHTML=`
+        <button onclick="quiz()">🎸 クイズ開始</button>
+        <button onclick="move('home')">🏠 自宅</button>
+        `;
 
-.status{
+    }
 
-    display:flex;
+    else if(place==="shop"){
 
-    gap:15px;
+        title.textContent="🎸 楽器店";
 
-    font-size:20px;
+        story.innerHTML=
+        "新しいベースやエフェクターが並んでいる。";
 
-}
+        buttons.innerHTML=`
+        <button onclick="move('home')">🏠 自宅</button>
+        `;
 
-main{
+    }
 
-    background:#222;
+    else{
 
-    border-radius:20px;
+        title.textContent="🏠 自宅";
 
-    padding:30px;
+        story.innerHTML=
+        "今日はどこへ行こう？";
 
-}
+        buttons.innerHTML=`
+        <button onclick="move('school')">🏫 学校</button>
+        <button onclick="move('live')">🎤 ライブハウス</button>
+        <button onclick="move('shop')">🎸 楽器店</button>
+        `;
 
-#place{
+    }
 
-    color:#8f5cff;
+    }
+        function quiz(){
 
-    margin-bottom:15px;
+    currentQuestion =
+        questions[Math.floor(Math.random()*questions.length)];
 
-}
+    const title=document.getElementById("place");
+    const story=document.getElementById("story");
+    const buttons=document.getElementById("buttons");
 
-#story{
+    title.textContent="🎸 邦ロッククイズ";
 
-    line-height:1.8;
+    story.textContent=currentQuestion.question;
 
-    font-size:20px;
+    buttons.innerHTML="";
 
-    margin-bottom:30px;
+    currentQuestion.choices.forEach((choice,index)=>{
 
-}
+        const btn=document.createElement("button");
 
-#buttons{
+        btn.textContent=choice;
 
-    display:flex;
+        btn.onclick=()=>answer(index);
 
-    flex-direction:column;
+        buttons.appendChild(btn);
 
-    gap:15px;
-
-}
-
-#buttons button{
-
-    padding:18px;
-
-    font-size:20px;
-
-    background:#333;
-
-    color:white;
-
-    border:none;
-
-    border-radius:12px;
-
-}
-
-#buttons button:active{
-
-    transform:scale(.98);
+    });
 
 }
 
-@media(max-width:700px){
+function answer(index){
 
-header{
+    const story=document.getElementById("story");
+    const buttons=document.getElementById("buttons");
 
-flex-direction:column;
+    if(index===currentQuestion.answer){
 
-gap:15px;
+        player.love+=currentQuestion.reward;
+
+        player.fans+=5;
+
+        if(player.love>=100){
+
+            player.level++;
+            player.love-=100;
+
+        }
+
+        story.innerHTML=`
+        <h2>⭕ 正解！</h2>
+        <p>邦ロック愛 +${currentQuestion.reward}</p>
+        <p>ファン +5</p>
+        `;
+
+    }else{
+
+        story.innerHTML=`
+        <h2>❌ 不正解！</h2>
+        <p>正解：${currentQuestion.choices[currentQuestion.answer]}</p>
+        `;
+
+    }
+
+    updateStatus();
+
+    saveGame();
+
+    buttons.innerHTML=`
+    <button onclick="quiz()">🎸 次の問題</button>
+    <button onclick="move('home')">🏠 自宅へ戻る</button>
+    `;
+
+        }
+        function nextDay() {
+
+    player.day++;
+
+    if (player.day > 30) {
+
+        player.day = 1;
+
+        player.month++;
+
+    }
+
+    updateStatus();
+
+    saveGame();
 
 }
 
-.status{
+function saveGame() {
 
-flex-direction:column;
-
-align-items:center;
-
-}
-
-#title-screen h1{
-
-font-size:40px;
+    localStorage.setItem(
+        "roadToRockstar",
+        JSON.stringify(player)
+    );
 
 }
 
+function loadGame() {
+
+    const data = localStorage.getItem(
+        "roadToRockstar"
+    );
+
+    if (!data) {
+
+        return;
+
+    }
+
+    player = JSON.parse(data);
+
 }
+
+function resetGame() {
+
+    if (!confirm("最初からやり直しますか？")) {
+
+        return;
+
+    }
+
+    localStorage.removeItem(
+        "roadToRockstar"
+    );
+
+    player = {
+
+        name: "",
+
+        level: 1,
+
+        love: 0,
+
+        fans: 0,
+
+        month: 4,
+
+        day: 1
+
+    };
+
+    location.reload();
+
+        }
+    function checkEvents() {
+
+    if (player.fans >= 100 && !player.firstLive) {
+
+        player.firstLive = true;
+
+        alert(
+            "🎉 初ライブ成功！\n\nファン100人突破！"
+        );
+
+    }
+
+    if (player.month === 5 && player.day === 1 && !player.festival) {
+
+        player.festival = true;
+
+        alert(
+            "🎪 文化祭ライブ開催決定！"
+        );
+
+    }
+
+}
+
+function levelUp() {
+
+    while (player.love >= 100) {
+
+        player.love -= 100;
+
+        player.level++;
+
+        alert(
+            "🎉 レベルアップ！\n\nLv." + player.level
+        );
+
+    }
+
+}
+
+setInterval(function () {
+
+    levelUp();
+
+    checkEvents();
+
+    saveGame();
+
+}, 1000);
