@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROAD to ROCKstar</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="title-screen">
+
+<h1>🎸 ROAD to ROCKstar</h1>
+
+<p>邦ロックで、人生を鳴らせ。</p>
+
+<button id="startBtn">はじめる</button>
+
+</div>
+
+<div id="game" style="display:none;">
+
+<header>
+
+<h2 id="playerName">名無しのベーシスト</h2>
+
+<div class="status">
+
+<div>Lv <span id="level">1</span></div>
+
+<div>❤️ <span id="love">0</span></div>
+
+<div>👥 <span id="fans">0</span></div>
+
+</div>
+
+</header>
+
+<main>
+
+<h2 id="place">🏠 自宅</h2>
+
+<p id="story">
+
+今日も最高の邦ロックを探しに行こう。
+
+</p>
+
+<div id="buttons">
+
+<button onclick="move('school')">🏫 学校</button>
+
+<button onclick="move('live')">🎤 ライブハウス</button>
+
+<button onclick="move('shop')">🎸 楽器店</button>
+
+</div>
+
+</main>
+
+</div>
+
+<script src="questions.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
