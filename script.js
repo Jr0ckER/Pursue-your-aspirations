@@ -26,6 +26,8 @@ function startGame() {
     gameScreen.style.display = "block";
 
     updateStatus();
+
+saveGame();
 }
 
 function updateStatus() {
@@ -137,6 +139,7 @@ function answer(index){
         player.fans+=5;
 
         updateStatus();
+        saveGame();
 
         story.innerHTML=
         "⭕ 正解！<br><br>邦ロック愛 +"+currentQuestion.reward+"<br>ファン +5";
@@ -152,4 +155,31 @@ function answer(index){
     <button onclick="quiz()">🎸 次の問題</button>
     <button onclick="move('home')">🏠 自宅へ戻る</button>
     `;
+}
+function saveGame() {
+
+    localStorage.setItem("roadToRockstar", JSON.stringify(player));
+
+}
+
+function loadGame() {
+
+    const data = localStorage.getItem("roadToRockstar");
+
+    if (!data) return;
+
+    player = JSON.parse(data);
+
+    document.getElementById("playerName").textContent = player.name;
+
+    updateStatus();
+
+}
+
+function resetGame(){
+
+    localStorage.removeItem("roadToRockstar");
+
+    location.reload();
+
 }
