@@ -1,24 +1,43 @@
+    // =======================
+// ROAD to ROCKstar Ver1.1
+// script.js 前半
+// =======================
+
 let player = {
     name: "",
     level: 1,
     love: 0,
-    fans: 0
+    fans: 0,
+    day: 1,
+    month: 4,
+    practice: 0
 };
+
+let currentQuestion = null;
 
 const titleScreen = document.getElementById("title-screen");
 const gameScreen = document.getElementById("game");
+
+const place = document.getElementById("place");
+const story = document.getElementById("story");
+const buttons = document.getElementById("buttons");
 
 document.getElementById("startBtn").addEventListener("click", startGame);
 
 function startGame() {
 
-    let name = prompt("君の名前を入力してください");
+    loadGame();
 
-    if (!name || name.trim() === "") {
-        name = "名無しのベーシスト";
+    if (!player.name) {
+
+        let name = prompt("君の名前を入力してください");
+
+        if (!name || name.trim() === "") {
+            name = "名無しのベーシスト";
+        }
+
+        player.name = name;
     }
-
-    player.name = name;
 
     document.getElementById("playerName").textContent = player.name;
 
@@ -27,159 +46,294 @@ function startGame() {
 
     updateStatus();
 
-saveGame();
+    move("home");
+
 }
 
-function updateStatus() {
+function updateStatus(){
+
+    document.getElementById("playerName").textContent = player.name;
 
     document.getElementById("level").textContent = player.level;
+
     document.getElementById("love").textContent = player.love;
+
     document.getElementById("fans").textContent = player.fans;
 
 }
 
-function move(place){
+function saveGame(){
 
-    const title=document.getElementById("place");
-    const story=document.getElementById("story");
-    const buttons=document.getElementById("buttons");
+    localStorage.setItem(
+        "roadToRockstar",
+        JSON.stringify(player)
+    );
 
-    if(place==="school"){
+}
 
-        title.textContent="🏫 学校";
+function loadGame(){
 
-        story.innerHTML=
-        "今日も授業。<br><br>放課後は軽音部でベースを弾こう。";
+    const data = localStorage.getItem("roadToRockstar");
+
+    if(data){
+
+        player = JSON.parse(data);
+
+    }
+
+}
+
+function nextDay(){
+
+    player.day++;
+
+    if(player.day>30){
+
+        player.day=1;
+
+        player.month++;
+
+        if(player.month>12){
+
+            player.month=1;
+
+        }
+
+    }
+
+}
+
+function move(area){
+
+    if(area==="home"){
+
+        place.textContent="🏠 自宅";
+
+        story.innerHTML=`
+        <h3>${player.month}月 ${player.day}日</h3>
+        今日も最高の邦ロックを探しに行こう。
+        `;
 
         buttons.innerHTML=`
-        <button onclick="move('home')">🏠 自宅へ戻る</button>
-        <button onclick="move('live')">🎤 ライブハウス</button>
+
+        <button onclick="practice()">
+        🎸 ベースを練習
+        </button>
+
+        <button onclick="move('school')">
+        🏫 学校
+        </button>
+
+        <button onclick="move('live')">
+        🎤 ライブハウス
+        </button>
+
+        <button onclick="move('shop')">
+        🎸 楽器店
+        </button>
+
         `;
 
     }
 
-    else if(place==="live"){
+    else if(area==="school"){
 
-        title.textContent="🎤 ライブハウス";
+        place.textContent="🏫 学校";
 
-        story.innerHTML=
-        "店長『初めて見る顔やな。<br><br>まずは邦ロッククイズで腕試しや！』";
+        story.innerHTML=`
+        授業が終わった。
+
+        軽音部へ向かおう。
+        `;
 
         buttons.innerHTML=`
-        <button onclick="quiz()">🎸 クイズに挑戦</button>
-        <button onclick="move('home')">🏠 自宅へ戻る</button>
+
+        <button onclick="practice()">
+        🎸 部活で練習
+        </button>
+
+        <button onclick="move('home')">
+        🏠 帰宅
+        </button>
+
         `;
 
     }
 
-    else if(place==="shop"){
+    else if(area==="live"){
 
-        title.textContent="🎸 楽器店";
+        place.textContent="🎤 ライブハウス";
 
-        story.innerHTML=
-        "新しいエフェクターやベースが並んでいる。";
+        story.innerHTML=`
+        店長「邦ロック好きか？
+
+        クイズに挑戦してみろ！」
+        `;
 
         buttons.innerHTML=`
-        <button onclick="move('home')">🏠 自宅へ戻る</button>
+
+        <button onclick="quiz()">
+        🎸 クイズ
+        </button>
+
+        <button onclick="move('home')">
+        🏠 帰宅
+        </button>
+
         `;
 
     }
 
     else{
 
-        title.textContent="🏠 自宅";
+        place.textContent="🎸 楽器店";
 
-        story.innerHTML=
-        "今日も最高の邦ロックを探しに行こう。";
+        story.innerHTML=`
+        新しいベースやエフェクターが並んでいる。
+        `;
 
         buttons.innerHTML=`
-        <button onclick="move('school')">🏫 学校</button>
-        <button onclick="move('live')">🎤 ライブハウス</button>
-        <button onclick="move('shop')">🎸 楽器店</button>
+
+        <button onclick="move('home')">
+        🏠 帰宅
+        </button>
+
         `;
 
     }
 
 }
+function practice(){
+
+    nextDay();
+
+    const gain = Math.floor(Math.random()*16)+10;
+    const fanGain = Math.floor(Math.random()*3)+1;
+
+    player.love += gain;
+    player.fans += fanGain;
+    player.practice++;
+
+    while(player.love>=100){
+        player.love-=100;
+        player.level++;
+    }
+
+    updateStatus();
+    saveGame();
+
+    place.textContent="🎸 ベース練習";
+
+    story.innerHTML=`
+    練習お疲れ！
+
+    ❤️ 邦ロック愛 +${gain}
+
+    👥 ファン +${fanGain}
+
+    ⭐ Lv.${player.level}
+    `;
+
+    buttons.innerHTML=`
+    <button onclick="practice()">もう一回練習</button>
+    <button onclick="move('home')">🏠 自宅へ戻る</button>
+    `;
+
+}
 
 function quiz(){
 
-    const title=document.getElementById("place");
-    const story=document.getElementById("story");
-    const buttons=document.getElementById("buttons");
+    nextDay();
 
-    title.textContent="🎸 邦ロッククイズ";
+    currentQuestion =
+        questions[Math.floor(Math.random()*questions.length)];
 
-    story.innerHTML="Saucy Dogのボーカルは？";
+    place.textContent="🎤 邦ロッククイズ";
 
-    buttons.innerHTML=`
-    <button onclick="answer(true)">石原慎也</button>
-    <button onclick="answer(false)">野田洋次郎</button>
-    <button onclick="answer(false)">藤原基央</button>
-    <button onclick="answer(false)">尾崎世界観</button>
+    story.innerHTML=`
+    <h3>${currentQuestion.question}</h3>
     `;
+
+    let html="";
+
+    currentQuestion.choices.forEach((choice,index)=>{
+
+        html += `
+        <button onclick="answer(${index})">
+        ${choice}
+        </button>
+        `;
+
+    });
+
+    html += `
+    <button onclick="move('home')">
+    🏠 やめる
+    </button>
+    `;
+
+    buttons.innerHTML=html;
+
 }
 
 function answer(index){
 
-    const story=document.getElementById("story");
-    const buttons=document.getElementById("buttons");
-
     if(index===currentQuestion.answer){
 
         player.love += currentQuestion.reward;
+        player.fans += 5;
 
-        if(player.love>=100){
+        while(player.love>=100){
 
+            player.love-=100;
             player.level++;
-            player.love=0;
 
         }
 
-        player.fans+=5;
+        story.innerHTML=`
+        <h2>⭕ 正解！</h2>
 
-        updateStatus();
-        saveGame();
+        ❤️ +${currentQuestion.reward}
 
-        story.innerHTML=
-        "⭕ 正解！<br><br>邦ロック愛 +"+currentQuestion.reward+"<br>ファン +5";
+        👥 +5
+        `;
 
     }else{
 
-        story.innerHTML=
-        "❌ 不正解！";
+        story.innerHTML=`
+        <h2>❌ 不正解！</h2>
+
+        正解は
+
+        <b>${currentQuestion.choices[currentQuestion.answer]}</b>
+        `;
 
     }
 
+    updateStatus();
+    saveGame();
+
     buttons.innerHTML=`
-    <button onclick="quiz()">🎸 次の問題</button>
+    <button onclick="quiz()">次の問題</button>
     <button onclick="move('home')">🏠 自宅へ戻る</button>
     `;
-}
-function saveGame() {
-
-    localStorage.setItem("roadToRockstar", JSON.stringify(player));
-
-}
-
-function loadGame() {
-
-    const data = localStorage.getItem("roadToRockstar");
-
-    if (!data) return;
-
-    player = JSON.parse(data);
-
-    document.getElementById("playerName").textContent = player.name;
-
-    updateStatus();
 
 }
 
 function resetGame(){
 
-    localStorage.removeItem("roadToRockstar");
+    if(confirm("セーブデータを削除しますか？")){
 
-    location.reload();
+        localStorage.removeItem("roadToRockstar");
+
+        location.reload();
+
+    }
 
 }
+
+window.onload=function(){
+
+    loadGame();
+
+};
